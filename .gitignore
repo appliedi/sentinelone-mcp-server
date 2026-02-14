@@ -26,3 +26,6 @@ npm-debug.log*
 
 # Claude Code
 .claude/
+
+# Review output
+TODO.md

@@ -18,7 +18,7 @@ export function formatTimeAgo(dateStr: string): string {
 export function sanitizeError(error: unknown): string {
   const message = error instanceof Error ? error.message : String(error);
   const config = getConfig();
-  return message.replace(new RegExp(config.apiKey, "g"), "[REDACTED]");
+  return message.replaceAll(config.apiKey, "[REDACTED]");
 }
 
 export function truncatePath(path: string, max: number): string {

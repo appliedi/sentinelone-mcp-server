@@ -95,8 +95,13 @@ export async function listThreats(params?: {
 export async function getThreat(
   threatId: string
 ): Promise<PaginatedResponse<Threat>> {
+<<<<<<< HEAD
   const params = new URLSearchParams({ ids: threatId });
   return request<PaginatedResponse<Threat>>(`/threats?${params}`);
+=======
+  const searchParams = new URLSearchParams({ ids: threatId });
+  return request<PaginatedResponse<Threat>>(`/threats?${searchParams.toString()}`);
+>>>>>>> dd3b509 (security fixes)
 }
 
 export async function mitigateThreat(
@@ -152,8 +157,13 @@ export async function listAgents(params?: {
 export async function getAgent(
   agentId: string
 ): Promise<PaginatedResponse<Agent>> {
+<<<<<<< HEAD
   const params = new URLSearchParams({ ids: agentId });
   return request<PaginatedResponse<Agent>>(`/agents?${params}`);
+=======
+  const searchParams = new URLSearchParams({ ids: agentId });
+  return request<PaginatedResponse<Agent>>(`/agents?${searchParams.toString()}`);
+>>>>>>> dd3b509 (security fixes)
 }
 
 export async function isolateAgent(
@@ -218,7 +228,11 @@ export async function getDVQueryStatus(
   queryId: string
 ): Promise<DVQueryStatus> {
   const response = await request<{ data: DVQueryStatus }>(
+<<<<<<< HEAD
     `/dv/query-status?${new URLSearchParams({ queryId })}`
+=======
+    `/dv/query-status?${new URLSearchParams({ queryId }).toString()}`
+>>>>>>> dd3b509 (security fixes)
   );
   return response.data;
 }
