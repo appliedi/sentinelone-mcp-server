@@ -24,6 +24,17 @@ export async function handleHashReputation(
         isError: true,
       };
     }
+    if (!/^[a-fA-F0-9]+$/.test(params.hash)) {
+      return {
+        content: [
+          {
+            type: "text" as const,
+            text: "Invalid hash format. Hash must be hexadecimal characters only.",
+          },
+        ],
+        isError: true,
+      };
+    }
 
     const result = await getHashReputation(params.hash);
     if (!result.data?.length) {
