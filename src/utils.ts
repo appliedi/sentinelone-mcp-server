@@ -2,8 +2,10 @@ import { getConfig } from "./config.js";
 
 export function formatTimeAgo(dateStr: string): string {
   const date = new Date(dateStr);
+  if (isNaN(date.getTime())) return dateStr;
   const now = new Date();
   const diffMs = now.getTime() - date.getTime();
+  if (diffMs < 0) return "just now";
   const diffMins = Math.floor(diffMs / 60000);
   const diffHours = Math.floor(diffMins / 60);
   const diffDays = Math.floor(diffHours / 24);
