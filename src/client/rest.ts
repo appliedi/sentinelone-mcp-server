@@ -95,7 +95,8 @@ export async function listThreats(params?: {
 export async function getThreat(
   threatId: string
 ): Promise<PaginatedResponse<Threat>> {
-  return request<PaginatedResponse<Threat>>(`/threats?ids=${threatId}`);
+  const params = new URLSearchParams({ ids: threatId });
+  return request<PaginatedResponse<Threat>>(`/threats?${params}`);
 }
 
 export async function mitigateThreat(
@@ -151,7 +152,8 @@ export async function listAgents(params?: {
 export async function getAgent(
   agentId: string
 ): Promise<PaginatedResponse<Agent>> {
-  return request<PaginatedResponse<Agent>>(`/agents?ids=${agentId}`);
+  const params = new URLSearchParams({ ids: agentId });
+  return request<PaginatedResponse<Agent>>(`/agents?${params}`);
 }
 
 export async function isolateAgent(
@@ -216,7 +218,7 @@ export async function getDVQueryStatus(
   queryId: string
 ): Promise<DVQueryStatus> {
   const response = await request<{ data: DVQueryStatus }>(
-    `/dv/query-status?queryId=${queryId}`
+    `/dv/query-status?${new URLSearchParams({ queryId })}`
   );
   return response.data;
 }
