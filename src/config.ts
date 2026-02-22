@@ -30,7 +30,7 @@ export function loadConfig(): Config {
     apiKey: process.env.SENTINELONE_API_KEY,
     apiBase: process.env.SENTINELONE_API_BASE,
     transport: process.env.MCP_TRANSPORT || "stdio",
-    port: process.env.MCP_PORT || 3000,
+    port: process.env.MCP_PORT || process.env.PORT || 3000,
     authToken: process.env.MCP_AUTH_TOKEN,
   });
 
