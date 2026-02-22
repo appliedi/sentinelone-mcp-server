@@ -124,18 +124,26 @@ async function startHttpServer(config: Config): Promise<void> {
   const { port, authToken } = config;
 
   const httpServer = createServer(async (req: IncomingMessage, res: ServerResponse) => {
+    // Parse URL and strip query string for path matching
+    const parsedUrl = new URL(req.url || "/", `http://${req.headers.host}`);
+
     // Only accept POST on /mcp
-    if (req.url !== "/mcp" || req.method !== "POST") {
+    if (parsedUrl.pathname !== "/mcp" || req.method !== "POST") {
       res.writeHead(req.method === "GET" || req.method === "DELETE" ? 405 : 404, {
         "Content-Type": "application/json",
       });
-      res.end(JSON.stringify({ error: req.url !== "/mcp" ? "Not Found" : "Method Not Allowed" }));
+      res.end(JSON.stringify({ error: parsedUrl.pathname !== "/mcp" ? "Not Found" : "Method Not Allowed" }));
       return;
     }
 
-    // Validate bearer token
+    // Validate token via Authorization header or ?token= query parameter
     const authHeader = req.headers.authorization;
-    if (!authHeader || authHeader !== `Bearer ${authToken}`) {
+    const queryToken = parsedUrl.searchParams.get("token");
+    const tokenValid =
+      (authHeader && authHeader === `Bearer ${authToken}`) ||
+      (queryToken && queryToken === authToken);
+
+    if (!tokenValid) {
       res.writeHead(401, { "Content-Type": "application/json" });
       res.end(JSON.stringify({ error: "Unauthorized" }));
       return;
