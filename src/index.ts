@@ -37,6 +37,42 @@ import {
   handleListSites,
   handleGetSite,
 } from "./tools/sites.js";
+import {
+  listActivitiesSchema,
+  listActivityTypesSchema,
+  handleListActivities,
+  handleListActivityTypes,
+} from "./tools/activities.js";
+import {
+  listExclusionsSchema,
+  listBlocklistSchema,
+  handleListExclusions,
+  handleListBlocklist,
+} from "./tools/exclusions.js";
+import {
+  listGroupsSchema,
+  getGroupSchema,
+  handleListGroups,
+  handleGetGroup,
+} from "./tools/groups.js";
+import {
+  listAppRisksSchema,
+  listAppInventorySchema,
+  handleListAppRisks,
+  handleListAppInventory,
+} from "./tools/applications.js";
+import {
+  listDeviceControlEventsSchema,
+  handleListDeviceControlEvents,
+} from "./tools/device-control.js";
+import {
+  listRangerInventorySchema,
+  listTagsSchema,
+  listIOCsSchema,
+  handleListRangerInventory,
+  handleListTags,
+  handleListIOCs,
+} from "./tools/network.js";
 
 function registerTools(server: McpServer): void {
   server.tool(
@@ -130,6 +166,96 @@ function registerTools(server: McpServer): void {
     getSiteSchema.shape,
     handleGetSite
   );
+
+  // Activity tools
+  server.tool(
+    "s1_list_activities",
+    "List SentinelOne activity log entries with optional filters. Shows audit trail of actions taken in the console.",
+    listActivitiesSchema.shape,
+    handleListActivities
+  );
+
+  server.tool(
+    "s1_list_activity_types",
+    "List all available SentinelOne activity types with their IDs and description templates.",
+    listActivityTypesSchema.shape,
+    handleListActivityTypes
+  );
+
+  // Exclusion tools
+  server.tool(
+    "s1_list_exclusions",
+    "List SentinelOne exclusions (whitelisted paths, hashes, certificates, file types). Use to audit what is excluded from scanning.",
+    listExclusionsSchema.shape,
+    handleListExclusions
+  );
+
+  server.tool(
+    "s1_list_blocklist",
+    "List SentinelOne blocklist (restrictions) entries. Shows hashes and paths that are explicitly blocked.",
+    listBlocklistSchema.shape,
+    handleListBlocklist
+  );
+
+  // Group tools
+  server.tool(
+    "s1_list_groups",
+    "List SentinelOne groups with optional filters. Groups organize agents within sites.",
+    listGroupsSchema.shape,
+    handleListGroups
+  );
+
+  server.tool(
+    "s1_get_group",
+    "Get detailed information about a specific SentinelOne group by ID, including agent count, policy, and registration token.",
+    getGroupSchema.shape,
+    handleGetGroup
+  );
+
+  // Application tools
+  server.tool(
+    "s1_list_app_risks",
+    "List application vulnerabilities (CVEs) detected across endpoints. Filter by severity, exploit status, and mitigation state.",
+    listAppRisksSchema.shape,
+    handleListAppRisks
+  );
+
+  server.tool(
+    "s1_list_app_inventory",
+    "List installed applications across endpoints. Shows application names, vendors, and endpoint counts.",
+    listAppInventorySchema.shape,
+    handleListAppInventory
+  );
+
+  // Device Control tools
+  server.tool(
+    "s1_list_device_control_events",
+    "List device control events (USB, Bluetooth, Thunderbolt, SDCard). Monitor peripheral device connections across endpoints.",
+    listDeviceControlEventsSchema.shape,
+    handleListDeviceControlEvents
+  );
+
+  // Network/Ranger/Tags/IOC tools
+  server.tool(
+    "s1_list_ranger_inventory",
+    "List Ranger network inventory. Discovers managed and unmanaged devices on the network with IP, MAC, OS, and manufacturer details.",
+    listRangerInventorySchema.shape,
+    handleListRangerInventory
+  );
+
+  server.tool(
+    "s1_list_tags",
+    "List SentinelOne tags for firewall, network-quarantine, or device-inventory. The type parameter is required.",
+    listTagsSchema.shape,
+    handleListTags
+  );
+
+  server.tool(
+    "s1_list_iocs",
+    "List threat intelligence IOCs (Indicators of Compromise). Filter by type (DNS, IP, URL, hash), severity, and source.",
+    listIOCsSchema.shape,
+    handleListIOCs
+  );
 }
 
 function readRequestBody(req: IncomingMessage): Promise<string> {
@@ -184,7 +310,7 @@ async function startHttpServer(config: Config): Promise<void> {
     // Create per-request server and transport (stateless mode)
     const server = new McpServer({
       name: "sentinelone",
-      version: "1.0.0",
+      version: "2.0.0",
     });
     registerTools(server);
 
@@ -235,7 +361,7 @@ async function main() {
 
     const server = new McpServer({
       name: "sentinelone",
-      version: "1.0.0",
+      version: "2.0.0",
     });
     registerTools(server);
 

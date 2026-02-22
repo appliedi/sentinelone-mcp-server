@@ -1,7 +1,7 @@
 {
   "name": "sentinelone-mcp-server",
-  "version": "1.0.0",
-  "description": "MCP server for SentinelOne Core + Deep Visibility APIs",
+  "version": "2.0.0",
+  "description": "MCP server for SentinelOne — 25 tools for threat management, endpoint operations, alerts, Deep Visibility, sites, activities, exclusions, groups, applications, device control, Ranger, tags, and IOCs",
   "type": "module",
   "main": "dist/index.js",
   "bin": {

@@ -15,9 +15,9 @@ export const listAgentsSchema = z.object({
   limit: z
     .number()
     .min(1)
-    .max(50)
+    .max(1000)
     .optional()
-    .describe("Max results (default 10, max 50)"),
+    .describe("Max results (default 25, max 1000)"),
   osTypes: z
     .array(z.string())
     .optional()
@@ -28,6 +28,15 @@ export const listAgentsSchema = z.object({
     .array(z.string())
     .optional()
     .describe("Filter: connected, disconnected"),
+  siteIds: z
+    .array(z.string())
+    .optional()
+    .describe("Filter by site IDs"),
+  groupIds: z
+    .array(z.string())
+    .optional()
+    .describe("Filter by group IDs"),
+  cursor: z.string().optional().describe("Pagination cursor from previous response"),
 });
 
 export const getAgentSchema = z.object({
@@ -61,12 +70,15 @@ export async function handleListAgents(
 ) {
   try {
     const result = await listAgents({
-      limit: params.limit || 10,
+      limit: params.limit || 25,
+      cursor: params.cursor,
       computerNameContains: params.computerName,
       osTypes: params.osTypes,
       isActive: params.isActive,
       isInfected: params.isInfected,
       networkStatuses: params.networkStatuses,
+      siteIds: params.siteIds,
+      groupIds: params.groupIds,
     });
 
     if (!result.data?.length) {
@@ -81,13 +93,19 @@ export async function handleListAgents(
     }
 
     const summary = result.data.map(summarizeAgent).join("\n\n");
-    const header = `Found ${result.data.length} agent(s):\n\n`;
+    const totalItems = result.pagination?.totalItems;
+    const header = totalItems
+      ? `Found ${result.data.length} of ${totalItems} agent(s):\n\n`
+      : `Found ${result.data.length} agent(s):\n\n`;
+    const footer = result.pagination?.nextCursor
+      ? `\n\nMore results available. Use cursor: "${result.pagination.nextCursor}"`
+      : "";
 
     return {
       content: [
         {
           type: "text" as const,
-          text: header + summary,
+          text: header + summary + footer,
         },
       ],
     };

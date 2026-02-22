@@ -38,9 +38,9 @@ export const listSitesSchema = z.object({
   limit: z
     .number()
     .min(1)
-    .max(100)
+    .max(1000)
     .optional()
-    .describe("Max results (default 25, max 100)"),
+    .describe("Max results (default 25, max 1000)"),
   cursor: z.string().optional().describe("Pagination cursor from previous response"),
 });
 

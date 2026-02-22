@@ -3,7 +3,7 @@ import { queryAlerts } from "../client/graphql.js";
 import { formatTimeAgo } from "../utils.js";
 
 export const listAlertsSchema = z.object({
-  limit: z.number().min(1).max(50).optional().describe("Max results (default 20, max 50)"),
+  limit: z.number().min(1).max(1000).optional().describe("Max results (default 20, max 1000)"),
   cursor: z.string().optional().describe("Pagination cursor (endCursor from previous response)"),
   severity: z
     .string()

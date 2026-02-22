@@ -157,6 +157,170 @@ export interface SingleSiteResponse {
   data: Site;
 }
 
+// Activity types
+export interface Activity {
+  id: string;
+  activityType: number;
+  primaryDescription: string;
+  secondaryDescription: string;
+  data: Record<string, any>;
+  createdAt: string;
+  updatedAt: string;
+  siteId: string;
+  siteName: string;
+  accountId: string;
+  accountName: string;
+  agentId: string;
+  agentUpdatedVersion: string;
+  userId: string;
+  threatId: string;
+  groupId: string;
+}
+
+export interface ActivityType {
+  id: number;
+  action: string;
+  descriptionTemplate: string;
+}
+
+// Exclusion types
+export interface Exclusion {
+  id: string;
+  type: string;
+  value: string;
+  osType: string;
+  mode: string;
+  source: string;
+  scopeName: string;
+  scopePath: string;
+  description: string;
+  userName: string;
+  userId: string;
+  siteIds: string[];
+  groupIds: string[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Group types
+export interface Group {
+  id: string;
+  name: string;
+  siteId: string;
+  siteName: string;
+  type: string;
+  rank: number;
+  totalAgents: number;
+  isDefault: boolean;
+  inherits: boolean;
+  creator: string;
+  creatorId: string;
+  createdAt: string;
+  updatedAt: string;
+  filterId: string;
+  filterName: string;
+  registrationToken: string;
+}
+
+export interface SingleGroupResponse {
+  data: Group;
+}
+
+// Application Risk types
+export interface AppRisk {
+  id: string;
+  cveId: string;
+  severity: string;
+  riskScore: number;
+  applicationName: string;
+  applicationVendor: string;
+  exploitedInTheWild: boolean;
+  mitigationStatus: string;
+  detailedDescription: string;
+  publishedDate: string;
+  affectedEndpointsCount: number;
+}
+
+// Application Inventory types
+export interface AppInventoryItem {
+  id: string;
+  applicationName: string;
+  applicationVendor: string;
+  osType: string;
+  endpointsCount: number;
+  applicationVersionsCount: number;
+  riskLevel: string;
+  installedDate: string;
+}
+
+// Tag types
+export interface Tag {
+  id: string;
+  name: string;
+  type: string;
+  kind: string;
+  description: string;
+  scopeId: string;
+  scopeName: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Device Control types
+export interface DeviceControlEvent {
+  id: string;
+  agentId: string;
+  eventType: string;
+  eventTime: string;
+  interface: string;
+  accessPermission: string;
+  vendorId: string;
+  productId: string;
+  deviceName: string;
+  deviceClass: string;
+  ruleName: string;
+  computerName: string;
+  siteName: string;
+  siteId: string;
+}
+
+// Ranger types
+export interface RangerDevice {
+  id: string;
+  localIp: string;
+  externalIp: string;
+  macAddress: string;
+  osName: string;
+  osType: string;
+  deviceType: string;
+  managedState: string;
+  manufacturer: string;
+  hostnames: string[];
+  firstSeen: string;
+  lastSeen: string;
+  siteId: string;
+  siteName: string;
+  networkName: string;
+}
+
+// IOC types
+export interface IOC {
+  id: string;
+  type: string;
+  value: string;
+  severity: string;
+  source: string;
+  name: string;
+  description: string;
+  category: string;
+  method: string;
+  creator: string;
+  creationTime: string;
+  updatedAt: string;
+  externalId: string;
+  validUntil: string;
+}
+
 // API Error response
 export interface ApiError {
   errors?: Array<{

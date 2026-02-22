@@ -15,9 +15,9 @@ export const listThreatsSchema = z.object({
   limit: z
     .number()
     .min(1)
-    .max(50)
+    .max(1000)
     .optional()
-    .describe("Max results (default 10, max 50)"),
+    .describe("Max results (default 25, max 1000)"),
   mitigationStatuses: z
     .array(z.string())
     .optional()
@@ -26,6 +26,19 @@ export const listThreatsSchema = z.object({
     .array(z.string())
     .optional()
     .describe("Filter: Malware, PUA, Suspicious"),
+  analystVerdicts: z
+    .array(z.string())
+    .optional()
+    .describe("Filter: true_positive, false_positive, suspicious, undefined"),
+  siteIds: z
+    .array(z.string())
+    .optional()
+    .describe("Filter by site IDs"),
+  groupIds: z
+    .array(z.string())
+    .optional()
+    .describe("Filter by group IDs"),
+  cursor: z.string().optional().describe("Pagination cursor from previous response"),
 });
 
 export const getThreatSchema = z.object({
@@ -59,11 +72,15 @@ export async function handleListThreats(
 ) {
   try {
     const result = await listThreats({
-      limit: params.limit || 10,
+      limit: params.limit || 25,
+      cursor: params.cursor,
       computerNameContains: params.computerName,
       threatNameContains: params.threatName,
       mitigationStatuses: params.mitigationStatuses,
       classifications: params.classifications,
+      analystVerdicts: params.analystVerdicts,
+      siteIds: params.siteIds,
+      groupIds: params.groupIds,
     });
 
     if (!result.data?.length) {
@@ -78,13 +95,19 @@ export async function handleListThreats(
     }
 
     const summary = result.data.map(summarizeThreat).join("\n\n");
-    const header = `Found ${result.data.length} threat(s):\n\n`;
+    const totalItems = result.pagination?.totalItems;
+    const header = totalItems
+      ? `Found ${result.data.length} of ${totalItems} threat(s):\n\n`
+      : `Found ${result.data.length} threat(s):\n\n`;
+    const footer = result.pagination?.nextCursor
+      ? `\n\nMore results available. Use cursor: "${result.pagination.nextCursor}"`
+      : "";
 
     return {
       content: [
         {
           type: "text" as const,
-          text: header + summary,
+          text: header + summary + footer,
         },
       ],
     };

@@ -32,3 +32,6 @@ npm-debug.log*
 
 # Review output
 TODO.md
+
+# Swagger specs
+swagger_*.json
