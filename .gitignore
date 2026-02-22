@@ -27,5 +27,8 @@ npm-debug.log*
 # Claude Code
 .claude/
 
+# Worktrees
+.worktrees/
+
 # Review output
 TODO.md
