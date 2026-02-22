@@ -116,6 +116,47 @@ export interface Alert {
   updatedAt: string;
 }
 
+// Site types
+export interface Site {
+  id: string;
+  name: string;
+  state: string;
+  siteType: string;
+  sku: string;
+  accountId: string;
+  accountName: string;
+  activeLicenses: number;
+  totalLicenses: number;
+  createdAt: string;
+  updatedAt: string;
+  expiration: string;
+  isDefault: boolean;
+  description: string;
+  externalId: string;
+  creator: string;
+  creatorId: string;
+  unlimitedExpiration: boolean;
+  unlimitedLicenses: boolean;
+}
+
+export interface SitesResponse {
+  data: {
+    allSites: {
+      activeLicenses: number;
+      totalLicenses: number;
+    };
+    sites: Site[];
+  };
+  pagination?: {
+    nextCursor?: string;
+    totalItems?: number;
+  };
+}
+
+export interface SingleSiteResponse {
+  data: Site;
+}
+
 // API Error response
 export interface ApiError {
   errors?: Array<{

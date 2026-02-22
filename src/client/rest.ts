@@ -8,6 +8,8 @@ import type {
   DVQueryStatus,
   DVEvent,
   MitigationAction,
+  SitesResponse,
+  SingleSiteResponse,
 } from "./types.js";
 
 const TIMEOUT_MS = 30000;
@@ -228,4 +230,46 @@ export async function getDVEvents(params: {
   return request<PaginatedResponse<DVEvent>>(
     `/dv/events?${searchParams.toString()}`
   );
+}
+
+// Sites API
+export async function listSites(params?: {
+  limit?: number;
+  cursor?: string;
+  siteIds?: string[];
+  accountIds?: string[];
+  nameContains?: string[];
+  query?: string;
+  state?: string;
+  states?: string[];
+  siteType?: string;
+  sku?: string;
+  sortBy?: string;
+  sortOrder?: string;
+}): Promise<SitesResponse> {
+  const searchParams = new URLSearchParams();
+
+  if (params?.limit) searchParams.set("limit", String(params.limit));
+  if (params?.cursor) searchParams.set("cursor", params.cursor);
+  if (params?.siteIds?.length)
+    searchParams.set("siteIds", params.siteIds.join(","));
+  if (params?.accountIds?.length)
+    searchParams.set("accountIds", params.accountIds.join(","));
+  if (params?.nameContains?.length)
+    searchParams.set("name__contains", params.nameContains.join(","));
+  if (params?.query) searchParams.set("query", params.query);
+  if (params?.state) searchParams.set("state", params.state);
+  if (params?.states?.length)
+    searchParams.set("states", params.states.join(","));
+  if (params?.siteType) searchParams.set("siteType", params.siteType);
+  if (params?.sku) searchParams.set("sku", params.sku);
+  if (params?.sortBy) searchParams.set("sortBy", params.sortBy);
+  if (params?.sortOrder) searchParams.set("sortOrder", params.sortOrder);
+
+  const query = searchParams.toString();
+  return request<SitesResponse>(`/sites${query ? `?${query}` : ""}`);
+}
+
+export async function getSite(siteId: string): Promise<SingleSiteResponse> {
+  return request<SingleSiteResponse>(`/sites/${encodeURIComponent(siteId)}`);
 }

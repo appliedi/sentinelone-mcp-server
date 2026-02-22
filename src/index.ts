@@ -31,6 +31,12 @@ import {
   handleDVQuery,
   handleDVGetEvents,
 } from "./tools/dv.js";
+import {
+  listSitesSchema,
+  getSiteSchema,
+  handleListSites,
+  handleGetSite,
+} from "./tools/sites.js";
 
 function registerTools(server: McpServer): void {
   server.tool(
@@ -108,6 +114,21 @@ function registerTools(server: McpServer): void {
     "Get events from a completed Deep Visibility query",
     dvGetEventsSchema.shape,
     handleDVGetEvents
+  );
+
+  // Register site tools
+  server.tool(
+    "s1_list_sites",
+    "List SentinelOne sites with optional filters. Use to discover site IDs for scoping other queries.",
+    listSitesSchema.shape,
+    handleListSites
+  );
+
+  server.tool(
+    "s1_get_site",
+    "Get detailed information about a specific SentinelOne site by ID, including licenses, expiration, and account info.",
+    getSiteSchema.shape,
+    handleGetSite
   );
 }
 
