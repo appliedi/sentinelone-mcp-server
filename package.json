@@ -22,7 +22,7 @@
   "license": "MIT",
   "author": "c0tton-fluff",
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.0.0",
+    "@modelcontextprotocol/sdk": "^1.27.0",
     "zod": "^3.24.0"
   },
   "devDependencies": {
