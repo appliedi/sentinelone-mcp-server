@@ -5,6 +5,7 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 
 import { loadConfig, type Config } from "./config.js";
+import { getClientIp, isIpAllowed } from "./ipAllowlist.js";
 import {
   listThreatsSchema,
   getThreatSchema,
@@ -280,6 +281,14 @@ async function startHttpServer(config: Config): Promise<void> {
         "Content-Type": "application/json",
       });
       res.end(JSON.stringify({ error: parsedUrl.pathname !== "/mcp" ? "Not Found" : "Method Not Allowed" }));
+      return;
+    }
+
+    // Enforce source-IP allowlist (empty list = allow all)
+    const ip = getClientIp(req);
+    if (!isIpAllowed(ip, config.allowedIps)) {
+      res.writeHead(403, { "content-type": "application/json" });
+      res.end(JSON.stringify({ error: `Forbidden: client IP ${ip} is not allowed` }));
       return;
     }
 

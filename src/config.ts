@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { parseAllowedIps } from "./ipAllowlist.js";
 
 const configSchema = z
   .object({
@@ -12,6 +13,7 @@ const configSchema = z
     transport: z.enum(["stdio", "http"]).default("stdio"),
     port: z.coerce.number().int().min(1).max(65535).default(3000),
     authToken: z.string().optional(),
+    allowedIps: z.array(z.string()).default([]),
   })
   .superRefine((data, ctx) => {
     if (data.transport === "http" && !data.authToken) {
@@ -32,6 +34,7 @@ export function loadConfig(): Config {
     transport: process.env.MCP_TRANSPORT || "stdio",
     port: process.env.MCP_PORT || process.env.PORT || 3000,
     authToken: process.env.MCP_AUTH_TOKEN,
+    allowedIps: parseAllowedIps(process.env.ALLOWED_IPS),
   });
 
   if (!result.success) {
