@@ -22,7 +22,7 @@
   "license": "MIT",
   "author": "c0tton-fluff",
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.27.0",
+    "@modelcontextprotocol/sdk": "^1.32.2",
     "ipaddr.js": "^2.4.0",
     "zod": "^3.24.0"
   },
