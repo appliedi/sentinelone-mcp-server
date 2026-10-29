@@ -4,10 +4,10 @@ import { parseAllowedIps } from "./ipAllowlist.js";
 const configSchema = z
   .object({
     apiKey: z
-      .string({ required_error: "SENTINELONE_API_KEY environment variable is required" })
+      .string({ error: (iss) => (iss.input === undefined ? "SENTINELONE_API_KEY environment variable is required" : undefined) })
       .min(1, "SENTINELONE_API_KEY cannot be empty"),
     apiBase: z
-      .string({ required_error: "SENTINELONE_API_BASE environment variable is required" })
+      .string({ error: (iss) => (iss.input === undefined ? "SENTINELONE_API_BASE environment variable is required" : undefined) })
       .url("SENTINELONE_API_BASE must be a valid URL (e.g., https://usea1.sentinelone.net)")
       .transform((url) => url.replace(/\/$/, "")), // Remove trailing slash
     transport: z.enum(["stdio", "http"]).default("stdio"),
@@ -18,7 +18,7 @@ const configSchema = z
   .superRefine((data, ctx) => {
     if (data.transport === "http" && !data.authToken) {
       ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+        code: "custom",
         message: "MCP_AUTH_TOKEN is required when MCP_TRANSPORT is 'http'",
         path: ["authToken"],
       });
@@ -38,7 +38,7 @@ export function loadConfig(): Config {
   });
 
   if (!result.success) {
-    const errors = result.error.errors.map((e) => e.message).join(", ");
+    const errors = result.error.issues.map((e) => e.message).join(", ");
     throw new Error(`Configuration error: ${errors}`);
   }
 
